@@ -1,9 +1,6 @@
-package rmit.assignment4.group127;
-import java.io.*;
-import java.util.HashMap;
-import java.util.Date;
-import java.io.FileInputStream;
-import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Person {
     private String personID;
@@ -11,37 +8,47 @@ public class Person {
     private String lastName;
     private String address;
     private String birthdate;
-    private HashMap<Date, Integer> demeritPoints;
-    private boolean isSuspended;
 
-    public boolean addPerson(String firstName, String lastName, String address, String birthdate, boolean isSuspended) throws FileNotFoundException {
-//        This code reads the data.txt tile - no searching
-//        String fileData;
-//        FileInputStream fileInput = null;
-//        Scanner fileScnr = null;
-//        fileInput = new FileInputStream("roadregistry-assignment/src/main/data.txt");
-//        fileScnr = new Scanner(fileInput);
-//        fileData = fileScnr.nextLine();
-//        System.out.println(fileData);
-        personID = "1";
+    public Person(String personID, String firstName, String lastName, String address, String birthdate) {
+        this.personID = personID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
         this.birthdate = birthdate;
-        this.isSuspended = isSuspended;
-        String dataOut = personID + "-" + this.firstName + "-" + this.lastName + "-" + this.address + "-" + this.birthdate + "-";
-        dataOut += this.isSuspended ? "true" :  "false";
-        FileOutputStream fileWrite = new FileOutputStream("roadregistry-assignment/src/main/data.txt", true);
-        PrintWriter write = new PrintWriter(fileWrite);
-        write.println(dataOut);
-        write.close();
+    }
 
-        return true;
-    }
-    public boolean updatePersonalDetails () {
-        return true;
-    }
-    public String addDemeritPoints () {
-        return "";
+    public boolean addPerson() {
+        // Validate personID
+        if (personID == null || personID.length() != 10) return false;
+
+        String firstTwo = personID.substring(0, 2);
+        String middle = personID.substring(2, 8);
+        String lastTwo = personID.substring(8);
+
+        if (!firstTwo.matches("[2-9]{2}")) return false;
+
+        int specialCount = 0;
+        for (char c : middle.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) specialCount++;
+        }
+        if (specialCount < 2) return false;
+
+        if (!lastTwo.matches("[A-Z]{2}")) return false;
+
+        // Validate address: must be in Victoria
+        if (!address.matches("^\\d+\\|[^|]+\\|[^|]+\\|Victoria\\|[^|]+$")) return false;
+
+        // Validate birthdate: DD-MM-YYYY
+        if (!birthdate.matches("^\\d{2}-\\d{2}-\\d{4}$")) return false;
+
+        // Append data to TXT file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("person_data.txt", true))) {
+            writer.write(String.join("|", personID, firstName, lastName, address, birthdate));
+            writer.newLine();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
