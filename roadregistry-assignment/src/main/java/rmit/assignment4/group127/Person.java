@@ -1,9 +1,12 @@
 package rmit.assignment4.group127;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Date;
+import java.text.ParseException;
+import java.io.IOException;
+import java.util.*;
+import java.text.SimpleDateFormat;
 import java.io.FileInputStream;
-import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 // Instantiate
 public class Person {
@@ -22,8 +25,8 @@ public class Person {
         this.lastName = lastName;
         this.address = address;
         this.birthdate = birthdate;
-        this.demeritPoints = demeritPoints;
-        this.isSuspended = isSuspended;
+        this.demeritPoints = new HashMap<>();
+        this.isSuspended = false;
     }
 
     // Below is the addPerson method: Complete
@@ -71,7 +74,7 @@ public class Person {
 
         // Validate birthdate: DD-MM-YYYY
         if (!birthdate.matches("^\\d{2}-\\d{2}-\\d{4}$")) {
-            System.out.println("Invalid Date.");
+            System.out.println("Invalid Date must follow dd-mm-yyyy.");
             return false;
         }
 
@@ -87,13 +90,117 @@ public class Person {
     }
 
     // Below is the updatePersonalDetails method: WIP
+    // Changing personal details will not change demerit points or suspension status
     public boolean updatePersonalDetails () {
 
         return true;
     }
 
     // Below is the addDemeritPoints method: WIP
-    public String addDemeritPoints () {
-        return "";
+    public String addDemeritPoints (String offenseDateStr, int points) {
+        // Call helper method to load existing data from demerit_points.txt file
+        loadDemeritPointsFromFile();
+
+        // Condition 1: Validate date format
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        // Set lenient to false to enforce format
+        sdf.setLenient(false);
+        // Instantiate offenseDate
+        Date offenseDate;
+        try {
+            offenseDate = sdf.parse(offenseDateStr);
+        } catch (ParseException e) {
+            System.out.println("Invalid: Date must follow dd-mm-yyyy.");
+            return "Failed"; // Invalid date format
+        }
+
+        // Condition 2: Validate points range
+        if (points < 1 || points > 6) {
+            System.out.println("Invalid: Points are out of range.");
+            return "Failed"; // Points are out of range
+        }
+
+        // Add offense to temp map to calculate suspension status
+        HashMap<Date, Integer> tempPoints = new HashMap<>(demeritPoints);
+        tempPoints.put(offenseDate, points);
+
+        // Calculate cutoff date two years before offenseDate
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(offenseDate);
+        cal.add(Calendar.YEAR, -2);
+        Date twoYearsAgo = cal.getTime();
+
+        // Sum points within last two years
+        int totalPoints = 0;
+        for (Date d : tempPoints.keySet()) {
+            if (!d.before(twoYearsAgo) && !d.after(offenseDate)) {
+                totalPoints += tempPoints.get(d);
+            }
+        }
+
+        // Condition 3: Determine suspension based on age and demerit points
+        // Call getAge() helper method to get driver age
+        int age = getAge();
+        if ((age < 21 & totalPoints > 6) || (age >= 21 && totalPoints > 12)) {
+            isSuspended = true;
+        } else {
+            isSuspended = false;
+        }
+
+        // Write offense to TXT file
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("demerit_points.txt", true))) {
+            writer.write(personID + "|" + offenseDateStr + "|" + points + "|" + "Suspended: " + isSuspended);
+            writer.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "Failed";
+        }
+
+        // Update internal map
+        demeritPoints.put(offenseDate, points);
+        return "Success";
     }
+
+    // Helper method: get age of drivers (utilised for the updatePersonalDetails method and addDemeritPoints method)
+    public int getAge() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        // Enforce DOB format
+        sdf.setLenient(false);
+        try {
+            Date birthDate = sdf.parse(birthdate);
+            Calendar birthCal = Calendar.getInstance();
+            birthCal.setTime(birthDate);
+
+            Calendar today = Calendar.getInstance();
+
+            int age = today.get(Calendar.YEAR) - birthCal.get(Calendar.YEAR);
+            // If birthday hasn't occurred yet this year, subtract 1
+            if (today.get(Calendar.DAY_OF_YEAR) < birthCal.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+            return age;
+        } catch (ParseException e) {
+            // If DOB invalid, return 0
+            return 0;
+        }
+    }
+
+    // Helper method: load demerit points from TXT file to update and set suspension status
+    public void loadDemeritPointsFromFile() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        try (BufferedReader reader = new BufferedReader(new FileReader("demerit_points.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length >= 4 && parts[0].equals(this.personID)) {
+                    Date date = sdf.parse(parts[1]);
+                    int points = Integer.parseInt(parts[2]);
+                    demeritPoints.put(date, points);
+                }
+            }
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
