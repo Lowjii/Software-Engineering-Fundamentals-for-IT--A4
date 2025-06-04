@@ -47,33 +47,33 @@ public class AppTest {
     @Test
     public void testAddDemeritPoint_ValidData() {
         Person p = new Person("99$%a#d@AC", "Paul", "Smith", "13|Swanston St|Melbourne|Victoria|Australia", "15-11-1990");
-        assertEquals(p.addDemeritPoints("21-01-2025", 1), "Success");
+        assertEquals("Success", p.addDemeritPoints("21-01-2025", 1));
     }
 
     @Test
     public void testAddDemeritPoint_InvalidDateFormat() {
         Person p = new Person("98$%a#d@AD", "Lee", "White", "21|1234 Rd|Williams Landing|Victoria|Australia", "23-12-1993");
-        assertEquals(p.addDemeritPoints("2025-01-21", 1), "Failed");
+        assertEquals("Failed", p.addDemeritPoints("2025-01-21", 1));
     }
 
     @Test
     public void testAddDemeritPoint_OutOfRange() {
         Person p = new Person("97$%a#d@AE", "Jane", "Doe", "99|Bourke St|Melbourne|Victoria|Australia", "30-12-2000");
-        assertEquals(p.addDemeritPoints("21-01-2025", 7), "Failed");
+        assertEquals("Failed", p.addDemeritPoints("21-01-2025", 7));
     }
 
     @Test
     public void testAddDemerit_SuspendOver21() {
         Person p = new Person("97$%a#d@AF", "Joe", "Manny", "101|Fake St|Docklands|Victoria|Australia", "02-04-1987");
-        assertEquals(p.addDemeritPoints("10-01-2025", 6), "Success");
-        assertEquals(p.addDemeritPoints("21-05-2025", 6), "Success");
-        assertEquals(p.addDemeritPoints("25-12-2025", 1), "Success"); // Should suspend Joe Manny (97$%a#d@AF)
+        assertEquals("Success", p.addDemeritPoints("10-01-2025", 6));
+        assertEquals("Success", p.addDemeritPoints("21-05-2025", 6));
+        assertEquals("Success", p.addDemeritPoints("25-12-2025", 1)); // Should suspend Joe Manny (97$%a#d@AF)
     }
 
     @Test
     public void testAddDemerit_SuspendUnder21() {
         Person p = new Person("11$%a#d@AG", "Jesse", "Jones", "101|Fake St|Docklands|Victoria|Australia", "02-04-2005");
-        assertEquals(p.addDemeritPoints("14-03-2025", 6), "Success");
-        assertEquals(p.addDemeritPoints("21-06-2025", 1), "Success"); // Should suspend Jesse Jones (11$%a#d@AG)
+        assertEquals("Success", p.addDemeritPoints("14-03-2025", 6));
+        assertEquals("Success", p.addDemeritPoints("21-06-2025", 1)); // Should suspend Jesse Jones (11$%a#d@AG)
     }
 }
