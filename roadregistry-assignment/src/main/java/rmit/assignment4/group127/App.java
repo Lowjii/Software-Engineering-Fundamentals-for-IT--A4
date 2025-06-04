@@ -30,8 +30,14 @@ public class App
         // Test: Adding demerit points (suspension)
         test1.addDemeritPoints("11-07-2025", 6);
 
+        // Test: Update details
+        //test1.updatePersonalDetails("56$d@12dAB", "Bob", "Mary-Smith", "16|Test St|Melbourne|Victoria|Australia", "15-11-1990");
+
         // Test: ID too short
         // Person test2 = new Person("56$d@AB", "Tom", "Lee", "32|Main St|Melbourne|Victoria|Australia", "15-11-1990");
         // test2.addPerson();
+
+        // Test: isSuspended
+        // test1.getIsSuspended();
     }
 }

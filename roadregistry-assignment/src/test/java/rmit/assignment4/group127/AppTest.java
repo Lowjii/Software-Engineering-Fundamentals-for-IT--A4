@@ -40,7 +40,14 @@ public class AppTest {
     }
 
     // Tests for addPerson
-    // WIP*
+    // Person is under 18, cannot change address
+    @Test
+    public void testUpdatePersonalDetails_Under18() {
+        Person p = new Person("11$%a#d@AA", "Duncan", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "01-11-2010");
+        p.addPerson();
+        assertFalse(p.updatePersonalDetails("11$%a#d@AA", "Duncan", "Lee", "14|Street St|Geelong|Victoria|Australia", "01-11-2010"),
+                "Should return false as client is under 18 and is attempting to change address.");
+    }
 
     // Tests for addDemeritPoint
     // Valid usage of addDemeritPoint, over 21 no suspension
@@ -65,15 +72,17 @@ public class AppTest {
     @Test
     public void testAddDemerit_SuspendOver21() {
         Person p = new Person("97$%a#d@AF", "Joe", "Manny", "101|Fake St|Docklands|Victoria|Australia", "02-04-1987");
-        assertEquals("Success", p.addDemeritPoints("10-01-2025", 6));
-        assertEquals("Success", p.addDemeritPoints("21-05-2025", 6));
-        assertEquals("Success", p.addDemeritPoints("25-12-2025", 1)); // Should suspend Joe Manny (97$%a#d@AF)
+        p.addDemeritPoints("10-01-2025", 6);
+        p.addDemeritPoints("21-05-2025", 6);
+        p.addDemeritPoints("25-12-2025", 1); // Should suspend Joe Manny (97$%a#d@AF)
+        assertTrue(p.getIsSuspended(), "Success");
     }
 
     @Test
     public void testAddDemerit_SuspendUnder21() {
         Person p = new Person("11$%a#d@AG", "Jesse", "Jones", "101|Fake St|Docklands|Victoria|Australia", "02-04-2005");
-        assertEquals("Success", p.addDemeritPoints("14-03-2025", 6));
-        assertEquals("Success", p.addDemeritPoints("21-06-2025", 1)); // Should suspend Jesse Jones (11$%a#d@AG)
+        p.addDemeritPoints("14-03-2025", 6);
+        p.addDemeritPoints("21-06-2025", 1); // Should suspend Jesse Jones (11$%a#d@AG)
+        assertTrue(p.getIsSuspended(), "Success");
     }
 }

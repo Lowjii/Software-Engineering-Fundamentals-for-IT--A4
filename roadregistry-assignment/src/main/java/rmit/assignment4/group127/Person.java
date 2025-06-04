@@ -91,9 +91,59 @@ public class Person {
 
     // Below is the updatePersonalDetails method: WIP
     // Changing personal details will not change demerit points or suspension status
-    public boolean updatePersonalDetails () {
+    public boolean updatePersonalDetails(String newID, String newFirstName, String newLastName, String newAddress, String newBirthdate) {
+        try {
+            // Checks birthdate format (must be DD-MM-YYYY)
+            if (!newBirthdate.matches("\\d{2}-\\d{2}-\\d{4}")) {
+                return false;
+            }
 
-        return true;
+            // Checks if birthdate is being changed
+            boolean birthdayChanging = !this.birthdate.equals(newBirthdate);
+
+            // Checks if any other personal detail is being changed
+            boolean otherDetailsChanging =
+                    !this.personID.equals(newID) ||
+                            !this.firstName.equals(newFirstName) ||
+                            !this.lastName.equals(newLastName) ||
+                            !this.address.equals(newAddress);
+
+            // Condition 1: Under 18 cannot change address
+            int age = getAge();
+            if (age < 18 && !this.address.equals(newAddress)) {
+                System.out.println("Invalid Change: Cannot change address, user is under 18 years old.");
+                return false;
+            }
+
+            // Condition 2: If birthday is changed, no other detail can change
+            if (birthdayChanging && otherDetailsChanging) {
+                return false;
+            }
+
+            // Condition 3: If ID starts with even number, it cannot change
+            char firstChar = this.personID.charAt(0);
+            if (Character.isDigit(firstChar) && (firstChar - '0') % 2 == 0 && !this.personID.equals(newID)) {
+                return false;
+            }
+
+            // Passed all checks — apply the updates
+            this.personID = newID;
+            this.firstName = newFirstName;
+            this.lastName = newLastName;
+            this.address = newAddress;
+            this.birthdate = newBirthdate;
+
+            // After all the fields are updated and before return true
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("person_data.txt"))) {
+                writer.write(this.personID + "|" + this.firstName + "|" + this.lastName + "|" + this.address + "|" + this.birthdate);
+            } catch (IOException e) {
+                return false;
+            }
+            return true;
+
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     // Below is the addDemeritPoints method: WIP
@@ -203,4 +253,9 @@ public class Person {
         }
     }
 
+    // Getter for suspension status
+    public boolean getIsSuspended() {
+        System.out.println(isSuspended);
+        return isSuspended;
+    }
 }
