@@ -52,36 +52,36 @@ public class AppTest {
     // This tests weather or not a user can update their birthday simultaneously to other details, which they should not abe able to do.
     @Test
     public void testUpdatePersonalDetails_BirthdayUpdatePlus() {
-        Person usr = new Person("11$%a#d@AA", "Bruce", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "13-05-1991");
+        Person usr = new Person("33$%a#d@AA", "Bruce", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "13-05-1991");
         usr.addPerson();
-        assertFalse(usr.updatePersonalDetails("11$%a#d@AA", "Duncan", "Lee", "21|Swanston St|Melbourne|Victoria|Australia", "13-06-1991"),
+        assertFalse(usr.updatePersonalDetails("33$%a#d@AA", "Duncan", "Lee", "21|Swanston St|Melbourne|Victoria|Australia", "13-06-1991"),
                 "Should return false as user should not be able to update birthdate and other details in one operation.");
     }
 
     // This tests if the user can change their birthday if that the only updated data.
     @Test
     public void testUpdatePersonalDetails_BirthdayUpdateOnly() {
-        Person usr = new Person("11$%a#d@AA", "Bruce", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "13-05-1991");
+        Person usr = new Person("33$%a#d@AA", "Bruce", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "13-05-1991");
         usr.addPerson();
-        assertTrue(usr.updatePersonalDetails("11$%a#d@AA", "Bruce", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "13-06-1991"),
+        assertTrue(usr.updatePersonalDetails("33$%a#d@AA", "Bruce", "Lee", "13|Swanston St|Melbourne|Victoria|Australia", "13-06-1991"),
                 "Should return true as user is only updating the birthday, no other changes");
     }
 
     // This tests if a user with an id containing an even leading digit can change their id, which they should not be able to
     @Test
     public void testUpdatePersonalDetails_EvenLeadingIDChar() {
-        Person usr = new Person("20%%a#d@AA", "Bruce", "Jenner", "1|Foster St|Dandenong|Victoria|Australia", "01-12-1999");
+        Person usr = new Person("22%%a#d@AA", "Bruce", "Jenner", "1|Foster St|Dandenong|Victoria|Australia", "01-12-1999");
         usr.addPerson();
-        assertFalse(usr.updatePersonalDetails("21&%a#v@BB", "Bruce", "Jenner", "1|Foster St|Dandenong|Victoria|Australia", "01-12-1999"),
+        assertFalse(usr.updatePersonalDetails("23&%a#v@BB", "Bruce", "Jenner", "1|Foster St|Dandenong|Victoria|Australia", "01-12-1999"),
                 "Should return false, as for an ID with an even first digit, the user's ID should not be modifiable.");
     }
 
     // This test a valid update where the user updates their first name only.
     @Test
     public void testUpdatePersonalDetails_ValidUpdate() {
-        Person usr = new Person("11$%a#d@AD", "Jerry", "West", "490|Deakin Ave|Mildura|Victoria|Australia", "01-02-1968");
+        Person usr = new Person("33$%a#d@AD", "Jerry", "West", "490|Deakin Ave|Mildura|Victoria|Australia", "01-02-1968");
         usr.addPerson();
-        assertTrue(usr.updatePersonalDetails("11$%a#d@AD", "Kanye", "West", "490|Deakin Ave|Mildura|Victoria|Australia", "01-02-1968"),
+        assertTrue(usr.updatePersonalDetails("33$%a#d@AD", "Kanye", "West", "490|Deakin Ave|Mildura|Victoria|Australia", "01-02-1968"),
                 "Should return true as the user is only update their address, which is a valid update.");
     }
 
