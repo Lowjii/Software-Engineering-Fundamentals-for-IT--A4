@@ -30,12 +30,17 @@ public class Person {
         this.isSuspended = false;
     }
 
+    // ------------------------------------------------------------------------------------------------------------
+    /* Note: if any validations fail, all of them either return false or "Failed" for the demerit class, thanks. */
+    // ------------------------------------------------------------------------------------------------------------
+
     // Below is the addPerson method: Complete
     public boolean addPerson() {
         // Validate personID
 
         // If ID is not equal to than 10
         if (personID == null || personID.length() != 10) {
+            // Print error message to console
             System.out.println("Invalid personID: must be exactly 10 characters.");
             return false;
         }

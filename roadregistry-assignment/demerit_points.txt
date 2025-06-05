@@ -1,1 +1,12 @@
-
+97$%a#d@AF|10-01-2025|6|Suspended: false
+97$%a#d@AF|21-05-2025|6|Suspended: false
+97$%a#d@AF|25-12-2025|1|Suspended: true
+11$%a#d@AG|14-03-2025|6|Suspended: false
+11$%a#d@AG|21-06-2025|1|Suspended: true
+99$%a#d@AC|21-01-2025|1|Suspended: false
+97$%a#d@AF|10-01-2025|6|Suspended: false
+97$%a#d@AF|21-05-2025|6|Suspended: false
+97$%a#d@AF|25-12-2025|1|Suspended: true
+11$%a#d@AG|14-03-2025|6|Suspended: false
+11$%a#d@AG|21-06-2025|1|Suspended: true
+99$%a#d@AC|21-01-2025|1|Suspended: false
