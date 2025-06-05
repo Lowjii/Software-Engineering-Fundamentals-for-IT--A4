@@ -1,4 +1,5 @@
 package rmit.assignment4.group127;
+// Imports
 import java.io.*;
 import java.text.ParseException;
 import java.io.IOException;
@@ -18,7 +19,7 @@ public class Person {
     private HashMap<Date, Integer> demeritPoints; // A variable that hold the demerit points with the offense day
     private boolean isSuspended;
 
-    // Contructor
+    // Constructor for person object
     public Person(String personID, String firstName, String lastName, String address, String birthdate) {
         this.personID = personID;
         this.firstName = firstName;
@@ -39,41 +40,46 @@ public class Person {
             return false;
         }
 
-        // Seperating ID for validation purposes
+        // Separating the ID for validation purposes (substring)
         String firstTwo = personID.substring(0, 2);
         String middle = personID.substring(2, 8);
         String lastTwo = personID.substring(8);
 
-        // First 2 characters must be in between 2 and 9
+        // Check: First 2 characters must be in between 2 and 9
         if (!firstTwo.matches("[2-9]{2}")) {
+            // Print error message to console
             System.out.println("Invalid personID: First 2 characters must be numbers between 2-9.");
             return false;
         }
 
-        // Ensures ID has at least 2 special characters between characters 3 - 8
+        // Check: Ensures ID has at least 2 special characters between characters 3 - 8
         int specialCount = 0;
         for (char c : middle.toCharArray()) {
             if (!Character.isLetterOrDigit(c)) specialCount++;
         }
         if (specialCount < 2) {
+            // Print error message to console
             System.out.println("Invalid personID: Must have at least 2 special characters.");
             return false;
         }
 
-        // Ensures last 2 characters are uppercase letters
+        // Check: Ensures last 2 characters are uppercase letters
         if (!lastTwo.matches("[A-Z]{2}")) {
+            // Print error message to console
             System.out.println("Invalid personID: Last 2 characters must be an uppercase letter.");
             return false;
         }
 
-        // Validate address: must be in Victoria
+        // Check: Validate address: must be in Victoria
         if (!address.matches("^\\d+\\|[^|]+\\|[^|]+\\|Victoria\\|[^|]+$")) {
+            // Print error message to console
             System.out.println("Invalid Address: Not located in Victoria.");
             return false;
         }
 
-        // Validate birthdate: DD-MM-YYYY
+        // Check: Validate birthdate: DD-MM-YYYY
         if (!birthdate.matches("^\\d{2}-\\d{2}-\\d{4}$")) {
+            // Print error message to console
             System.out.println("Invalid Date must follow dd-mm-yyyy.");
             return false;
         }
@@ -89,7 +95,7 @@ public class Person {
         }
     }
 
-    // Below is the updatePersonalDetails method: WIP
+    // Below is the updatePersonalDetails method: Complete
     // Changing personal details will not change demerit points or suspension status
     public boolean updatePersonalDetails(String newID, String newFirstName, String newLastName, String newAddress, String newBirthdate) {
         try {
@@ -111,18 +117,23 @@ public class Person {
             // Condition 1: Under 18 cannot change address
             int age = getAge();
             if (age < 18 && !this.address.equals(newAddress)) {
+                // Print error message to console
                 System.out.println("Invalid Change: Cannot change address, user is under 18 years old.");
                 return false;
             }
 
             // Condition 2: If birthday is changed, no other detail can change
             if (birthdayChanging && otherDetailsChanging) {
+                // Print error message to console
+                System.out.println("Invalid Change: Cannot simultaneously change birthdate and other details.");
                 return false;
             }
 
             // Condition 3: If ID starts with even number, it cannot change
             char firstChar = this.personID.charAt(0);
             if (Character.isDigit(firstChar) && (firstChar - '0') % 2 == 0 && !this.personID.equals(newID)) {
+                // Print error message to console
+                System.out.println("Invalid Change: Cannot update ID, ID is protected due to ID type.");
                 return false;
             }
 
@@ -146,7 +157,7 @@ public class Person {
         }
     }
 
-    // Below is the addDemeritPoints method: WIP
+    // Below is the addDemeritPoints method: Complete
     public String addDemeritPoints (String offenseDateStr, int points) {
         // Call helper method to load existing data from demerit_points.txt file
         loadDemeritPointsFromFile();
@@ -160,12 +171,14 @@ public class Person {
         try {
             offenseDate = sdf.parse(offenseDateStr);
         } catch (ParseException e) {
+            // Print error message to console
             System.out.println("Invalid: Date must follow dd-mm-yyyy.");
             return "Failed"; // Invalid date format
         }
 
         // Condition 2: Validate points range
         if (points < 1 || points > 6) {
+            // Print error message to console
             System.out.println("Invalid: Points are out of range.");
             return "Failed"; // Points are out of range
         }
@@ -255,6 +268,7 @@ public class Person {
 
     // Getter for suspension status
     public boolean getIsSuspended() {
+        // Print to console as well
         System.out.println(isSuspended);
         return isSuspended;
     }
